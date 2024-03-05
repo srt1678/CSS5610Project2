@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import SingleBox from "./SingleBox";
 import "./Grid.css";
-import { CellsCount } from "./App";
+import { GridContext } from "./App";
 
 function Grid() {
     const [
@@ -11,7 +11,7 @@ function Grid() {
         setFinalGrid,
         boxCount,
         setBoxCount,
-    ] = useContext(CellsCount);
+    ] = useContext(GridContext);
     const [row, setRow] = useState(20);
     const [column, setColumn] = useState(20);
 
@@ -95,38 +95,51 @@ function Grid() {
     const nextIterationGrid = () => {
         const currentGrid = [];
         let indexCount = 0;
-        for (let i = 0; i < row; i++) {
-            for (let j = 0; j < column; j++) {
+        const rowInt = parseInt(row);
+        const columnInt = parseInt(column);
+        let newCellsCount = 0;
+        
+        for (let i = 0; i < rowInt; i++) {
+            for (let j = 0; j < columnInt; j++) {
                 const location = `${i},${j}`;
                 let nearbyCellsAlive = 0;
                 if (i != 0) {
-                    nearbyCellsAlive += checkCellStatus(indexCount - column);
+                    //Top
+                    nearbyCellsAlive += checkCellStatus(indexCount - columnInt);
                     if (j != 0) {
+                        //Upper left
                         nearbyCellsAlive += checkCellStatus(
-                            indexCount - column - 1
+                            indexCount - columnInt - 1
                         );
                     }
-                    if (j != column - 1) {
+                    if (j != columnInt - 1) {
+                        //Upper right
                         nearbyCellsAlive += checkCellStatus(
-                            indexCount - column + 1
+                            indexCount - columnInt + 1
                         );
                     }
                 }
-                if (i != row - 1) {
-                    nearbyCellsAlive += checkCellStatus(indexCount + column);
+                if (i != rowInt - 1) {
+                    //Bot
+                    nearbyCellsAlive += checkCellStatus(indexCount + columnInt);
                     if (j != 0) {
+                        //Bot left
                         nearbyCellsAlive += checkCellStatus(
-                            indexCount + column - 1
+                            indexCount + columnInt - 1
                         );
+                        //Bot right
+                    }if(j != columnInt - 1){
                         nearbyCellsAlive += checkCellStatus(
-                            indexCount + column + 1
+                            indexCount + columnInt + 1
                         );
                     }
                 }
                 if (j != 0) {
+                    //Left
                     nearbyCellsAlive += checkCellStatus(indexCount - 1);
                 }
-                if (j != column - 1) {
+                if (j != columnInt - 1) {
+                    //Right
                     nearbyCellsAlive += checkCellStatus(indexCount + 1);
                 }
                 if (
@@ -134,26 +147,32 @@ function Grid() {
                 ) {
                     if (nearbyCellsAlive < 2 || nearbyCellsAlive > 3) {
                         currentGrid.push({
+                            keyName: boxCount + indexCount,
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault",
                         });
                     } else {
                         currentGrid.push({
+                            keyName: boxCount + indexCount,
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault boxAlive",
                         });
+                        newCellsCount++;
                     }
                 } else {
                     if (nearbyCellsAlive == 3) {
                         currentGrid.push({
+                            keyName: boxCount + indexCount,
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault boxAlive",
                         });
+                        newCellsCount++;
                     } else {
                         currentGrid.push({
+                            keyName: boxCount + indexCount,
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault",
@@ -163,16 +182,18 @@ function Grid() {
                 indexCount++;
             }
         }
+        setCellsCount(newCellsCount);
+        setBoxCount(boxCount + indexCount);
         setFinalGrid(currentGrid);
     };
     const checkCellStatus = (index) => {
-        if (finalGrid[index] === "boxDefault boxAlive") {
+        if (finalGrid[index].initBoxClass === "boxDefault boxAlive") {
             return 1;
         } else {
             return 0;
         }
     };
-
+    console.log(finalGrid);
     return (
         <>
             <div className="headerContainer">

@@ -4,7 +4,7 @@ import Home from "./Home";
 import { createContext, useState } from "react";
 
 
-export const CellsCount = createContext();
+export const GridContext = createContext();
 function App() {
     const [cellsCount, setCellsCount] = useState(0);
     const [boxCount, setBoxCount] = useState(0);
@@ -32,9 +32,9 @@ function App() {
 
     return (
         <>
-            <CellsCount.Provider value={[cellsCount, setCellsCount, finalGrid, setFinalGrid, boxCount, setBoxCount]}>
+            <GridContext.Provider value={[cellsCount, setCellsCount, finalGrid, setFinalGrid, boxCount, setBoxCount]}>
                 <Grid />
-            </CellsCount.Provider>
+            </GridContext.Provider>
         </>
     );
 }

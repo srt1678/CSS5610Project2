@@ -1,33 +1,44 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import "./SingleBox.css";
-import { CellsCount } from "./App";
+import { GridContext } from "./App";
 
 export default function SingleBox(props) {
-    const [cellsCount, setCellsCount, finalGrid, setFinalGrid] =
-        useContext(CellsCount);
-    const [selectBoxClassName, setSelectBoxClassName] = useState(
-        props.initBoxClass
-    );
+    const [
+        cellsCount,
+        setCellsCount,
+        finalGrid,
+        setFinalGrid,
+        boxCount,
+        setBoxCount,
+    ] = useContext(GridContext);
 
     const selectBox = () => {
-        if (selectBoxClassName === "boxDefault") {
+        setBoxCount(boxCount + 1);
+        if (props.initBoxClass === "boxDefault") {
             setCellsCount(cellsCount + 1);
-            setSelectBoxClassName("boxDefault boxAlive");
-            let currentGrid = [...finalGrid];
-            currentGrid[props.boxIndex] = {
-                //keyName: combineKey,
-                boxLocation: props.boxLocation,
-                boxIndex: props.boxIndex,
-                initBoxClass: selectBoxClassName,
-            };
-            setFinalGrid(currentGrid);
+            setFinalGrid((prevGrid) => {
+                const updatedGrid = [...prevGrid];
+                updatedGrid[props.boxIndex] = {
+                    ...updatedGrid[props.boxIndex],
+                    keyName: boxCount,
+                    initBoxClass: "boxDefault boxAlive",
+                };
+                return updatedGrid;
+            });
         } else {
             setCellsCount(cellsCount - 1);
-            setSelectBoxClassName("boxDefault");
+            setFinalGrid((prevGrid) => {
+                const updatedGrid = [...prevGrid];
+                updatedGrid[props.boxIndex] = {
+                    ...updatedGrid[props.boxIndex],
+                    keyName: boxCount,
+                    initBoxClass: "boxDefault",
+                };
+                return updatedGrid;
+            });
         }
     };
     return (
-        //<div className={selectBoxClassName} onClick={() => selectBox()}></div>
-        <div className={selectBoxClassName}></div>
+        <div className={props.initBoxClass} onClick={() => selectBox()}></div>
     );
 }
