@@ -1,0 +1,7 @@
+.boxDefault {
+    background-color: white;
+    border: 1px solid white;
+}
+.boxAlive{
+    background-color: black;
+}
