@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import SingleBox from "./SingleBox";
 import "./Grid.css";
 import { GridContext } from "./App";
+import ErrorMessage from "./ErrorMessage";
 
 function Grid() {
     const [
@@ -14,14 +15,15 @@ function Grid() {
     ] = useContext(GridContext);
     const [row, setRow] = useState(20);
     const [column, setColumn] = useState(20);
-
     const [gridStyle, setGridStyle] = useState({
         gridTemplateColumns: `repeat(20, 1fr)`,
         height: `${20 * 100}px`,
         width: `${20 * 100}px`,
     });
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     const handleNewGrid = () => {
+        setShowErrorMessage(false);
         const updateGrid = [];
         let index = 0;
         let cellsCount = 0;
@@ -57,6 +59,7 @@ function Grid() {
     };
 
     const resetGrid = () => {
+        setShowErrorMessage(false);
         const updateGrid = [];
         let index = 0;
         let cellsCount = 0;
@@ -93,12 +96,13 @@ function Grid() {
         setColumn(20);
     };
     const nextIterationGrid = () => {
+        setShowErrorMessage(false);
         const currentGrid = [];
         let indexCount = 0;
         const rowInt = parseInt(row);
         const columnInt = parseInt(column);
         let newCellsCount = 0;
-        
+
         for (let i = 0; i < rowInt; i++) {
             for (let j = 0; j < columnInt; j++) {
                 const location = `${i},${j}`;
@@ -128,7 +132,8 @@ function Grid() {
                             indexCount + columnInt - 1
                         );
                         //Bot right
-                    }if(j != columnInt - 1){
+                    }
+                    if (j != columnInt - 1) {
                         nearbyCellsAlive += checkCellStatus(
                             indexCount + columnInt + 1
                         );
@@ -193,7 +198,7 @@ function Grid() {
             return 0;
         }
     };
-    console.log(finalGrid);
+
     return (
         <>
             <div className="headerContainer">
@@ -203,7 +208,14 @@ function Grid() {
                     <input
                         className="inputBoxes"
                         placeholder="20"
-                        onChange={(e) => setRow(e.target.value)}
+                        onChange={(e) => {
+                            setShowErrorMessage(false);
+                            if (e.target.value < 3 || e.target.value > 40) {
+                                setShowErrorMessage(true);
+                            } else {
+                                setRow(e.target.value);
+                            }
+                        }}
                         value={row}
                     ></input>
                 </div>
@@ -213,10 +225,18 @@ function Grid() {
                     <input
                         className="inputBoxes"
                         placeholder="20"
-                        onChange={(e) => setColumn(e.target.value)}
+                        onChange={(e) => {
+                            setShowErrorMessage(false);
+                            if (e.target.value < 3 || e.target.value > 40) {
+                                setShowErrorMessage(true);
+                            } else {
+                                setColumn(e.target.value);
+                            }
+                        }}
                         value={column}
                     ></input>
                 </div>
+                
                 <button
                     className="changeGridButton"
                     onClick={() => handleNewGrid()}
@@ -224,6 +244,7 @@ function Grid() {
                     Change Grid
                 </button>
             </div>
+            {showErrorMessage? <ErrorMessage/> : <></>}
             <div className="overallPageContainer">
                 <div className="container" style={gridStyle}>
                     {finalGrid.map((box) => {
