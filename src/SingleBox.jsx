@@ -15,9 +15,9 @@ export default function SingleBox(props) {
             setSelectBoxClassName("boxDefault boxAlive");
             let currentGrid = [...finalGrid];
             currentGrid[props.boxIndex] = {
-                key: props.keyName,
-                boxId: props.keyName,
-                boxIndex: props.index,
+                //keyName: combineKey,
+                boxLocation: props.boxLocation,
+                boxIndex: props.boxIndex,
                 initBoxClass: selectBoxClassName,
             };
             setFinalGrid(currentGrid);
@@ -27,6 +27,7 @@ export default function SingleBox(props) {
         }
     };
     return (
-        <div className={selectBoxClassName} onClick={() => selectBox()}></div>
+        //<div className={selectBoxClassName} onClick={() => selectBox()}></div>
+        <div className={selectBoxClassName}></div>
     );
 }

@@ -4,45 +4,100 @@ import "./Grid.css";
 import { CellsCount } from "./App";
 
 function Grid() {
-    const [cellsCount, setCellsCount, finalGrid, setFinalGrid] = useContext(CellsCount);
+    const [
+        cellsCount,
+        setCellsCount,
+        finalGrid,
+        setFinalGrid,
+        boxCount,
+        setBoxCount,
+    ] = useContext(CellsCount);
     const [row, setRow] = useState(20);
     const [column, setColumn] = useState(20);
-    const [updateGridCount, setUpdateGridCount] = useState(0);
-    
+
     const [gridStyle, setGridStyle] = useState({
         gridTemplateColumns: `repeat(20, 1fr)`,
         height: `${20 * 100}px`,
         width: `${20 * 100}px`,
     });
-    const [shouldChangeGrid, setShouldChangeGrid] = useState(false);
-    const defaultRow = 20;
-    const defaultColumn = 20;
 
-    const handleNewRow = (event) => {
-        setRow(parseInt(event.target.value));
-    };
-    const handleNewColumn = (event) => {
-        setColumn(parseInt(event.target.value));
-    };
     const handleNewGrid = () => {
-        setShouldChangeGrid(true);
-        setUpdateGridCount(updateGridCount + 1);
+        const updateGrid = [];
+        let index = 0;
+        let cellsCount = 0;
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < column; j++) {
+                const location = `${i},${j}`;
+                const randomNum = Math.floor(Math.random() * 100 + 1);
+                let initBoxClass;
+                if (randomNum <= 5) {
+                    initBoxClass = "boxDefault boxAlive";
+                    cellsCount++;
+                } else {
+                    initBoxClass = "boxDefault";
+                }
+                updateGrid.push({
+                    keyName: boxCount + index,
+                    boxLocation: location,
+                    boxIndex: index,
+                    initBoxClass: initBoxClass,
+                });
+                index++;
+            }
+        }
+        setBoxCount(boxCount + index);
+        setFinalGrid(updateGrid);
+        const newGridStyle = {
+            gridTemplateColumns: `repeat(${column}, 1fr)`,
+            height: `${row * 100}px`,
+            width: `${column * 100}px`,
+        };
+        setGridStyle(newGridStyle);
+        setCellsCount(cellsCount);
     };
 
     const resetGrid = () => {
-        setRow(defaultRow);
-        setColumn(defaultColumn);
-        setShouldChangeGrid(true);
-        setUpdateGridCount(updateGridCount + 1);
+        const updateGrid = [];
+        let index = 0;
+        let cellsCount = 0;
+        for (let i = 0; i < 20; i++) {
+            for (let j = 0; j < 20; j++) {
+                const location = `${i},${j}`;
+                const randomNum = Math.floor(Math.random() * 100 + 1);
+                let initBoxClass;
+                if (randomNum <= 5) {
+                    initBoxClass = "boxDefault boxAlive";
+                    cellsCount++;
+                } else {
+                    initBoxClass = "boxDefault";
+                }
+                updateGrid.push({
+                    keyName: boxCount + index,
+                    boxLocation: location,
+                    boxIndex: index,
+                    initBoxClass: initBoxClass,
+                });
+                index++;
+            }
+        }
+        setBoxCount(boxCount + index);
+        setFinalGrid(updateGrid);
+        const newGridStyle = {
+            gridTemplateColumns: `repeat(${20}, 1fr)`,
+            height: `${20 * 100}px`,
+            width: `${20 * 100}px`,
+        };
+        setGridStyle(newGridStyle);
+        setCellsCount(cellsCount);
+        setRow(20);
+        setColumn(20);
     };
     const nextIterationGrid = () => {
         const currentGrid = [];
-        setUpdateGridCount(updateGridCount + 1);
-        console.log(finalGrid);
         let indexCount = 0;
         for (let i = 0; i < row; i++) {
             for (let j = 0; j < column; j++) {
-                const key = `${i},${j},${updateGridCount}`;
+                const location = `${i},${j}`;
                 let nearbyCellsAlive = 0;
                 if (i != 0) {
                     nearbyCellsAlive += checkCellStatus(indexCount - column);
@@ -57,7 +112,6 @@ function Grid() {
                         );
                     }
                 }
-                console.log(`${key}, ${nearbyCellsAlive}`);
                 if (i != row - 1) {
                     nearbyCellsAlive += checkCellStatus(indexCount + column);
                     if (j != 0) {
@@ -69,49 +123,38 @@ function Grid() {
                         );
                     }
                 }
-                console.log(`${key}, ${nearbyCellsAlive}`);
                 if (j != 0) {
                     nearbyCellsAlive += checkCellStatus(indexCount - 1);
                 }
-                console.log(`${key}, ${nearbyCellsAlive}`);
                 if (j != column - 1) {
                     nearbyCellsAlive += checkCellStatus(indexCount + 1);
                 }
-                console.log(`${key}, ${nearbyCellsAlive}`);
                 if (
                     finalGrid[indexCount].initBoxClass === "boxDefault boxAlive"
                 ) {
                     if (nearbyCellsAlive < 2 || nearbyCellsAlive > 3) {
-                        console.log(`${key}: dead`)
                         currentGrid.push({
-                            keyName: key,
-                            boxId: key,
+                            boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault",
                         });
                     } else {
-                        console.log(`${key}: alive`)
                         currentGrid.push({
-                            keyName: key,
-                            boxId: key,
+                            boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault boxAlive",
                         });
                     }
                 } else {
-                    if(nearbyCellsAlive == 3){
-                        console.log(`${key}: alive`)
+                    if (nearbyCellsAlive == 3) {
                         currentGrid.push({
-                            keyName: key,
-                            boxId: key,
+                            boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault boxAlive",
                         });
-                    }else{
-                        console.log(`${key}: dead`)
+                    } else {
                         currentGrid.push({
-                            keyName: key,
-                            boxId: key,
+                            boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault",
                         });
@@ -130,42 +173,6 @@ function Grid() {
         }
     };
 
-    useEffect(() => {
-        if (shouldChangeGrid) {
-            setShouldChangeGrid(false);
-            setCellsCount(0);
-            const newGridStyle = {
-                gridTemplateColumns: `repeat(${column}, 1fr)`,
-                height: `${row * 100}px`,
-                width: `${column * 100}px`,
-            };
-            setGridStyle(newGridStyle);
-            const updateGrid = [];
-            let index = 0;
-            for (let i = 0; i < row; i++) {
-                for (let j = 0; j < column; j++) {
-                    const key = `${i},${j},${updateGridCount}`;
-                    const randomNum = Math.floor(Math.random() * 100 + 1);
-                    let initBoxClass;
-                    if (randomNum <= 5) {
-                        initBoxClass = "boxDefault boxAlive";
-                        setCellsCount((cellsCount) => cellsCount + 1);
-                    } else {
-                        initBoxClass = "boxDefault";
-                    }
-                    updateGrid.push({
-                        keyName: key,
-                        boxId: key,
-                        boxIndex: index,
-                        initBoxClass: initBoxClass,
-                    });
-                    index++;
-                }
-            }
-            setFinalGrid(updateGrid);
-        }
-    }, [shouldChangeGrid]);
-
     return (
         <>
             <div className="headerContainer">
@@ -175,7 +182,8 @@ function Grid() {
                     <input
                         className="inputBoxes"
                         placeholder="20"
-                        onChange={handleNewRow}
+                        onChange={(e) => setRow(e.target.value)}
+                        value={row}
                     ></input>
                 </div>
 
@@ -184,7 +192,8 @@ function Grid() {
                     <input
                         className="inputBoxes"
                         placeholder="20"
-                        onChange={handleNewColumn}
+                        onChange={(e) => setColumn(e.target.value)}
+                        value={column}
                     ></input>
                 </div>
                 <button
@@ -196,12 +205,12 @@ function Grid() {
             </div>
             <div className="overallPageContainer">
                 <div className="container" style={gridStyle}>
-                    {finalGrid.map((box, index) => {
+                    {finalGrid.map((box) => {
                         return (
                             <SingleBox
                                 key={box.keyName}
-                                boxId = {box.keyName}
-                                boxIndex = {index}
+                                boxLocation={box.boxLocation}
+                                boxIndex={box.boxIndex}
                                 initBoxClass={box.initBoxClass}
                             />
                         );
