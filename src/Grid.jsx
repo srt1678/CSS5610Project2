@@ -12,6 +12,8 @@ function Grid() {
         setFinalGrid,
         boxCount,
         setBoxCount,
+        isHeatmapMode,
+        setIsHeatmapMode,
     ] = useContext(GridContext);
     const [row, setRow] = useState(20);
     const [column, setColumn] = useState(20);
@@ -32,9 +34,11 @@ function Grid() {
                 const location = `${i},${j}`;
                 const randomNum = Math.floor(Math.random() * 100 + 1);
                 let initBoxClass;
+                let heatmapLevel = 0;
                 if (randomNum <= 5) {
                     initBoxClass = "boxDefault boxAlive";
                     cellsCount++;
+                    heatmapLevel = 10;
                 } else {
                     initBoxClass = "boxDefault";
                 }
@@ -43,6 +47,8 @@ function Grid() {
                     boxLocation: location,
                     boxIndex: index,
                     initBoxClass: initBoxClass,
+                    heatmapMode: isHeatmapMode,
+                    heatmapLevel: heatmapLevel,
                 });
                 index++;
             }
@@ -68,9 +74,11 @@ function Grid() {
                 const location = `${i},${j}`;
                 const randomNum = Math.floor(Math.random() * 100 + 1);
                 let initBoxClass;
+                let heatmapLevel = 0;
                 if (randomNum <= 5) {
                     initBoxClass = "boxDefault boxAlive";
                     cellsCount++;
+                    heatmapLevel = 10;
                 } else {
                     initBoxClass = "boxDefault";
                 }
@@ -79,6 +87,8 @@ function Grid() {
                     boxLocation: location,
                     boxIndex: index,
                     initBoxClass: initBoxClass,
+                    heatmapMode: isHeatmapMode,
+                    heatmapLevel: heatmapLevel,
                 });
                 index++;
             }
@@ -107,6 +117,7 @@ function Grid() {
             for (let j = 0; j < columnInt; j++) {
                 const location = `${i},${j}`;
                 let nearbyCellsAlive = 0;
+                let currentHeapMapLevel = finalGrid[indexCount].heatmapLevel;
                 if (i != 0) {
                     //Top
                     nearbyCellsAlive += checkCellStatus(indexCount - columnInt);
@@ -156,6 +167,8 @@ function Grid() {
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault",
+                            heatmapMode: isHeatmapMode,
+                            heatmapLevel: currentHeapMapLevel - 1,
                         });
                     } else {
                         currentGrid.push({
@@ -163,6 +176,8 @@ function Grid() {
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault boxAlive",
+                            heatmapMode: isHeatmapMode,
+                            heatmapLevel: currentHeapMapLevel,
                         });
                         newCellsCount++;
                     }
@@ -173,6 +188,8 @@ function Grid() {
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault boxAlive",
+                            heatmapMode: isHeatmapMode,
+                            heatmapLevel: 10,
                         });
                         newCellsCount++;
                     } else {
@@ -181,6 +198,8 @@ function Grid() {
                             boxLocation: location,
                             boxIndex: indexCount,
                             initBoxClass: "boxDefault",
+                            heatmapMode: isHeatmapMode,
+                            heatmapLevel: currentHeapMapLevel - 1,
                         });
                     }
                 }
@@ -197,6 +216,32 @@ function Grid() {
         } else {
             return 0;
         }
+    };
+
+    const updateGridHeatmapMode = () => {
+        const updateGrid = [];
+        let index = 0;
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < column; j++) {
+                const location = `${i},${j}`;
+                let heatmapLevel = 0;
+                if (finalGrid[index].initBoxClass === "boxDefault boxAlive") {
+                    heatmapLevel = 10;
+                }
+                updateGrid.push({
+                    keyName: boxCount + index,
+                    boxLocation: location,
+                    boxIndex: index,
+                    initBoxClass: finalGrid[index].initBoxClass,
+                    heatmapMode: !isHeatmapMode,
+                    heatmapLevel: heatmapLevel,
+                });
+                index++;
+            }
+        }
+        setIsHeatmapMode(!isHeatmapMode);
+        setFinalGrid(updateGrid);
+        setBoxCount(boxCount + index);
     };
 
     return (
@@ -236,15 +281,24 @@ function Grid() {
                         value={column}
                     ></input>
                 </div>
-                
                 <button
                     className="changeGridButton"
                     onClick={() => handleNewGrid()}
                 >
                     Change Grid
                 </button>
+                <button
+                    className={
+                        isHeatmapMode ? "heatMapButtonOn" : "heatMapButtonOff"
+                    }
+                    onClick={() => {
+                        updateGridHeatmapMode();
+                    }}
+                >
+                    Heatmap
+                </button>
             </div>
-            {showErrorMessage? <ErrorMessage/> : <></>}
+            {showErrorMessage ? <ErrorMessage /> : <></>}
             <div className="overallPageContainer">
                 <div className="container" style={gridStyle}>
                     {finalGrid.map((box) => {
@@ -254,6 +308,8 @@ function Grid() {
                                 boxLocation={box.boxLocation}
                                 boxIndex={box.boxIndex}
                                 initBoxClass={box.initBoxClass}
+                                heatmapMode={box.heatmapMode}
+                                heatmapLevel={box.heatmapLevel}
                             />
                         );
                     })}

@@ -3,11 +3,11 @@ import Grid from "./Grid";
 import Home from "./Home";
 import { createContext, useState } from "react";
 
-
 export const GridContext = createContext();
 function App() {
     const [cellsCount, setCellsCount] = useState(0);
     const [boxCount, setBoxCount] = useState(0);
+    const [isHeatmapMode, setIsHeatmapMode] = useState(false);
     const [finalGrid, setFinalGrid] = useState(() => {
         const tempGrid = [];
         let index = 0;
@@ -22,7 +22,14 @@ function App() {
                 } else {
                     initBoxClass = "boxDefault";
                 }
-                tempGrid.push({ keyName: index, boxLocation: location, boxIndex: index, initBoxClass: initBoxClass });
+                tempGrid.push({
+                    keyName: index,
+                    boxLocation: location,
+                    boxIndex: index,
+                    initBoxClass: initBoxClass,
+                    heatmapMode: isHeatmapMode,
+                    heatmapLevel: 0,
+                });
                 index++;
             }
         }
@@ -32,7 +39,18 @@ function App() {
 
     return (
         <>
-            <GridContext.Provider value={[cellsCount, setCellsCount, finalGrid, setFinalGrid, boxCount, setBoxCount]}>
+            <GridContext.Provider
+                value={[
+                    cellsCount,
+                    setCellsCount,
+                    finalGrid,
+                    setFinalGrid,
+                    boxCount,
+                    setBoxCount,
+                    isHeatmapMode,
+                    setIsHeatmapMode,
+                ]}
+            >
                 <Grid />
             </GridContext.Provider>
         </>
