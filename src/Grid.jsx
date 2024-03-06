@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import SingleBox from "./SingleBox";
 import "./Grid.css";
 import { GridContext } from "./App";
@@ -23,6 +23,8 @@ function Grid() {
         width: `${20 * 100}px`,
     });
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const [isAutoPlay, setIsAutoPlay] = useState(false);
+    const [time, setTime] = useState(0);
 
     const handleNewGrid = () => {
         setShowErrorMessage(false);
@@ -244,6 +246,16 @@ function Grid() {
         setBoxCount(boxCount + index);
     };
 
+    useEffect(() => {
+        if (isAutoPlay) {
+            const timer = setTimeout(() => {
+                setTime(time + 1);
+                nextIterationGrid();
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [isAutoPlay, time]);
+
     return (
         <>
             <div className="gridPageOverallContainer">
@@ -257,14 +269,10 @@ function Grid() {
                             className="inputBoxes"
                             placeholder="20"
                             onChange={(e) => {
-                                setShowErrorMessage(false);
-                                if (e.target.value < 3 || e.target.value > 40) {
-                                    setShowErrorMessage(true);
-                                } else {
-                                    setRow(e.target.value);
-                                }
+                                setRow(e.target.value);
                             }}
                             value={row}
+                            disabled={isAutoPlay}
                         ></input>
                     </div>
 
@@ -274,19 +282,32 @@ function Grid() {
                             className="inputBoxes"
                             placeholder="20"
                             onChange={(e) => {
-                                setShowErrorMessage(false);
-                                if (e.target.value < 3 || e.target.value > 40) {
-                                    setShowErrorMessage(true);
-                                } else {
-                                    setColumn(e.target.value);
-                                }
+                                setColumn(e.target.value);
                             }}
                             value={column}
+                            disabled={isAutoPlay}
                         ></input>
                     </div>
                     <button
-                        className="changeGridButton"
-                        onClick={() => handleNewGrid()}
+                        className={
+                            isAutoPlay ? "disabledButton" : "changeGridButton"
+                        }
+                        onClick={() => {
+                            setShowErrorMessage(false);
+                            if (
+                                row < 3 ||
+                                row > 40 ||
+                                column < 3 ||
+                                column > 40
+                            ) {
+                                setShowErrorMessage(true);
+                                setRow(20);
+                                setColumn(20);
+                            } else {
+                                handleNewGrid();
+                            }
+                        }}
+                        disabled={isAutoPlay}
                     >
                         Change Grid
                     </button>
@@ -322,16 +343,36 @@ function Grid() {
                 </div>
                 <div className="footerContainer">
                     <button
-                        className="resetGridButton"
+                        className={
+                            isAutoPlay ? "disabledButton" : "resetGridButton"
+                        }
                         onClick={() => resetGrid()}
+                        disabled={isAutoPlay}
                     >
                         Reset
                     </button>
                     <button
-                        className="nextIterationButton"
+                        className={
+                            isAutoPlay
+                                ? "disabledButton"
+                                : "nextIterationButton"
+                        }
                         onClick={() => nextIterationGrid()}
+                        disabled={isAutoPlay}
                     >
                         Next
+                    </button>
+                    <button
+                        className={
+                            isAutoPlay
+                                ? "autoPlayOnButton"
+                                : "autoPlayOffButton"
+                        }
+                        onClick={() => {
+                            setIsAutoPlay(!isAutoPlay);
+                        }}
+                    >
+                        {isAutoPlay ? "Stop Auto Play" : "Start Auto Play"}
                     </button>
                 </div>
             </div>

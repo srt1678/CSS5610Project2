@@ -48,7 +48,10 @@
 .resetGridButton,
 .nextIterationButton,
 .heatMapButtonOff,
-.heatMapButtonOn {
+.heatMapButtonOn,
+.autoPlayOnButton,
+.autoPlayOffButton,
+.disabledButton {
     width: 250px;
     font-size: 30px;
     background-color: white;
@@ -59,7 +62,9 @@
 .resetGridButton:hover,
 .nextIterationButton:hover,
 .heatMapButtonOff:hover,
-.heatMapButtonOn:hover {
+.heatMapButtonOn:hover,
+.autoPlayOnButton:hover,
+.autoPlayOffButton:hover {
     cursor: pointer;
     background-color: black;
     border: 2px solid white;
@@ -67,6 +72,9 @@
 }
 .heatMapButtonOn {
     background-color: red;
+}
+.autoPlayOnButton{
+    background-color: rgb(255,215,0);
 }
 
 .overallPageContainer {
