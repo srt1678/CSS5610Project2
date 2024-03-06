@@ -1,3 +1,12 @@
+.gridPageOverallContainer {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	top: 150px;
+	height: auto;
+	overflow: hidden;
+}
 .headerContainer,
 .footerContainer {
     width: 100%;

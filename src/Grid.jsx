@@ -246,85 +246,94 @@ function Grid() {
 
     return (
         <>
-            <div className="headerContainer">
-                <div className="inputTitle cellsCount">Cells: {cellsCount}</div>
-                <div className="inputContainer">
-                    <div className="inputTitle">Row:</div>
-                    <input
-                        className="inputBoxes"
-                        placeholder="20"
-                        onChange={(e) => {
-                            setShowErrorMessage(false);
-                            if (e.target.value < 3 || e.target.value > 40) {
-                                setShowErrorMessage(true);
-                            } else {
-                                setRow(e.target.value);
-                            }
-                        }}
-                        value={row}
-                    ></input>
-                </div>
+            <div className="gridPageOverallContainer">
+                <div className="headerContainer">
+                    <div className="inputTitle cellsCount">
+                        Cells: {cellsCount}
+                    </div>
+                    <div className="inputContainer">
+                        <div className="inputTitle">Row:</div>
+                        <input
+                            className="inputBoxes"
+                            placeholder="20"
+                            onChange={(e) => {
+                                setShowErrorMessage(false);
+                                if (e.target.value < 3 || e.target.value > 40) {
+                                    setShowErrorMessage(true);
+                                } else {
+                                    setRow(e.target.value);
+                                }
+                            }}
+                            value={row}
+                        ></input>
+                    </div>
 
-                <div className="inputContainer">
-                    <div className="inputTitle">Column:</div>
-                    <input
-                        className="inputBoxes"
-                        placeholder="20"
-                        onChange={(e) => {
-                            setShowErrorMessage(false);
-                            if (e.target.value < 3 || e.target.value > 40) {
-                                setShowErrorMessage(true);
-                            } else {
-                                setColumn(e.target.value);
-                            }
+                    <div className="inputContainer">
+                        <div className="inputTitle">Column:</div>
+                        <input
+                            className="inputBoxes"
+                            placeholder="20"
+                            onChange={(e) => {
+                                setShowErrorMessage(false);
+                                if (e.target.value < 3 || e.target.value > 40) {
+                                    setShowErrorMessage(true);
+                                } else {
+                                    setColumn(e.target.value);
+                                }
+                            }}
+                            value={column}
+                        ></input>
+                    </div>
+                    <button
+                        className="changeGridButton"
+                        onClick={() => handleNewGrid()}
+                    >
+                        Change Grid
+                    </button>
+                    <button
+                        className={
+                            isHeatmapMode
+                                ? "heatMapButtonOn"
+                                : "heatMapButtonOff"
+                        }
+                        onClick={() => {
+                            updateGridHeatmapMode();
                         }}
-                        value={column}
-                    ></input>
+                    >
+                        Heatmap
+                    </button>
                 </div>
-                <button
-                    className="changeGridButton"
-                    onClick={() => handleNewGrid()}
-                >
-                    Change Grid
-                </button>
-                <button
-                    className={
-                        isHeatmapMode ? "heatMapButtonOn" : "heatMapButtonOff"
-                    }
-                    onClick={() => {
-                        updateGridHeatmapMode();
-                    }}
-                >
-                    Heatmap
-                </button>
-            </div>
-            {showErrorMessage ? <ErrorMessage /> : <></>}
-            <div className="overallPageContainer">
-                <div className="container" style={gridStyle}>
-                    {finalGrid.map((box) => {
-                        return (
-                            <SingleBox
-                                key={box.keyName}
-                                boxLocation={box.boxLocation}
-                                boxIndex={box.boxIndex}
-                                initBoxClass={box.initBoxClass}
-                                heatmapMode={box.heatmapMode}
-                                heatmapLevel={box.heatmapLevel}
-                            />
-                        );
-                    })}
+                {showErrorMessage ? <ErrorMessage /> : <></>}
+                <div className="overallPageContainer">
+                    <div className="container" style={gridStyle}>
+                        {finalGrid.map((box) => {
+                            return (
+                                <SingleBox
+                                    key={box.keyName}
+                                    boxLocation={box.boxLocation}
+                                    boxIndex={box.boxIndex}
+                                    initBoxClass={box.initBoxClass}
+                                    heatmapMode={box.heatmapMode}
+                                    heatmapLevel={box.heatmapLevel}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
-            </div>
-            <div className="footerContainer">
-                <button className="resetGridButton" onClick={() => resetGrid()}>
-                    Reset
-                </button>
-                <button
-                    className="nextIterationButton"
-                    onClick={() => nextIterationGrid()}
-                >
-                    Next
-                </button>
+                <div className="footerContainer">
+                    <button
+                        className="resetGridButton"
+                        onClick={() => resetGrid()}
+                    >
+                        Reset
+                    </button>
+                    <button
+                        className="nextIterationButton"
+                        onClick={() => nextIterationGrid()}
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         </>
     );

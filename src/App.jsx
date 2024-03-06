@@ -1,6 +1,6 @@
 import "./App.css";
 import Grid from "./Grid";
-import Home from "./Home";
+import Navbar from "./Navbar";
 import { createContext, useState } from "react";
 
 export const GridContext = createContext();
@@ -39,6 +39,7 @@ function App() {
 
     return (
         <>
+            <Navbar />
             <GridContext.Provider
                 value={[
                     cellsCount,
