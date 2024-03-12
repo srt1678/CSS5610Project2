@@ -26,3 +26,11 @@
 .gameInfoList{
     margin-bottom: 10px;
 }
+@media (max-width: 678px){
+    .gameIntroContainer{
+        width: 80%;
+    }
+    .gameIntroParagraph{
+        font-size: 18px;
+    }
+}
