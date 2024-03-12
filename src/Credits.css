@@ -1,0 +1,13 @@
+.creditsContainer{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    top: 200px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    letter-spacing: 5px;
+}
+.creditsContainer > h1{
+    text-align: center
+}
